@@ -2,6 +2,43 @@
 const GEO = 'https://geocoding-api.open-meteo.com/v1/search';
 const WX  = 'https://api.open-meteo.com/v1/forecast';
 
+//add the icon sources :: searched that it is written that way
+const WEATHER_CODES = {
+  0:  ['Clear sky', '01d'],
+  1:  ['Mainly clear', '02d'],
+  2:  ['Partly cloudy', '03d'],
+  3:  ['Overcast', '04d'],
+  45: ['Fog', '50d'],
+  48: ['Rime fog', '50d'],
+  51: ['Light drizzle', '09d'],
+  53: ['Drizzle', '09d'],
+  55: ['Heavy drizzle', '09d'],
+  56: ['Freezing drizzle', '09d'],
+  57: ['Freezing drizzle', '09d'],
+  61: ['Light rain', '10d'],
+  63: ['Rain', '10d'],
+  65: ['Heavy rain', '10d'],
+  66: ['Freezing rain', '13d'],
+  67: ['Freezing rain', '13d'],
+  71: ['Light snow', '13d'],
+  73: ['Snow', '13d'],
+  75: ['Heavy snow', '13d'],
+  77: ['Snow grains', '13d'],
+  80: ['Light showers', '09d'],
+  81: ['Showers', '09d'],
+  82: ['Violent showers', '09d'],
+  85: ['Snow showers', '13d'],
+  86: ['Heavy snow showers', '13d'],
+  95: ['Thunderstorm', '11d'],
+  96: ['Thunderstorm with hail', '11d'],
+  99: ['Thunderstorm with hail', '11d'],
+};
+
+//the code that we re gonna get we re gonna match it to the condition and put a backup if we fetch an unknown weather
+function describe(code) {
+  return WEATHER_CODES[code] ?? ['Unknown conditions', '03d'];
+}
+
 //my parameters defined in html
 const search_btn=document.querySelector('#searchform');
 const status_el=document.querySelector('#status');
@@ -50,6 +87,11 @@ function renderWeather(data) {
       return card;
     })
   );
+  //added where hes gonna fetch the code to put the matching weather using openweathermap api this time cz open meteo dont have icons
+    const [text, iconName] = describe(current.weather_code);
+    icon_el.src = `https://openweathermap.org/img/wn/${iconName}@2x.png`;
+    icon_el.alt = text; // the text that match with my codes are my alt text in case the person cant see the icon
+    conditions_el.textContent = text;
 }
 
 function setStatus(state, message = '') { // we need to state the status for the user so he knows whats going on with have" idle, loading, done and error"
