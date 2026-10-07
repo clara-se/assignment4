@@ -10,4 +10,9 @@ const temp_el=document.querySelector('#temp');
 const wind_el=document.querySelector('#wind');
 const forecast_el=document.querySelector('#forecast');
 
+async function getJSON(url) {
+  const response = await fetch(url); // calling the api 
+  if (!response.ok) throw new Error(`HTTP ${response.status}`); // show me if the error is 4 (client) or 5 (server not working)
+  return response.json();
+}
 
