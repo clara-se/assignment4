@@ -19,19 +19,19 @@ async function getJSON(url) {
 async function loadWeather(city) {
   const q = new URLSearchParams({ name: city, count: 1 }); // so we dont write manually the url
   const geo = await getJSON(`${GEO}?${q}`); //get the data from the geo api
-  if (!geo.results?.length) throw new Error('not-found');// so it doesnt do error if the client try to fetch a non existing data, it will go out
+  if (!geo.results?.length) throw new Error('not-found');// so it doesnt do error ad goes out if the client try to fetch a non existing data,we show him a message what he does wrong
 
-  const { latitude, longitude, name } = geo.results[0]; //destructure so we dont do data.current.temperature =>current.temperature
+  const { latitude, longitude, name } = geo.results[0]; //pulls the 3 fields out of the first geocoding result
   const p = new URLSearchParams({ //get the data from the open weather by calling the api
     latitude, longitude, forecast_days: 3, // the parameters i want
     current: 'temperature_2m,wind_speed_10m',
     daily: 'temperature_2m_max,temperature_2m_min',
   });
-  return { name, ...(await getJSON(`${WX}?${p}`)) }; //spread so it will put the first elements then the new element added in a new array 
+  return { name, ...(await getJSON(`${WX}?${p}`)) }; //spread so it will put the first elements then the new element added in a new object
 }
 
 function renderWeather(data) {
-  const { current, daily } = data;//destructure
+  const { current, daily } = data;//destructure  so we dont do data.current.temperature =>current.temperature
   temp_el.textContent =
     `${Math.round(current.temperature_2m)}°C`; //bel element tem_el ecrit la valeur qui est dans current.temperature..
   wind_el.textContent =
@@ -45,3 +45,32 @@ function renderWeather(data) {
     })
   );
 }
+
+function setStatus(state, message = '') { // we need to state the status for the user so he knows whats going on with have" idle, loading, done and error"
+  statusEl.dataset.state = state;
+  statusEl.textContent = message;
+  searchBtn.disabled = state === 'loading';
+}
+
+function friendly(err) { //function in case we have an error , we will send a mesage to the user so he kknows what he did wrong 
+  if (err.message === 'not-found') {
+    return "City not found. Check the spelling and try again.";
+  }
+  return "Couldn't reach the weather service. Check your connection and try again.";
+}
+
+async function onSearch(e) {
+  e.preventDefault();
+  const city = input.value.trim();// we let the user input the city he wants
+  setStatus('loading', `Loading ${city}…`); //now we show load
+  try {
+    const data = await loadWeather(city); // we try to fetsh the data of the city the user wants 
+    renderWeather(data); //take the variables i want that i defined in renderweather
+    setStatus('success');
+  } catch (err) { // in case we coulldnt fetsh the data , we go to the function friendly that shows the user what he did wrong
+    setStatus('error', friendly(err));
+  }
+}
+
+form.addEventListener('submit', onSearch);// add a listener on the button search 
+setStatus('idle', 'Search for a city');// what to show when the state is idle
