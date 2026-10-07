@@ -27,5 +27,21 @@ async function loadWeather(city) {
     current: 'temperature_2m,wind_speed_10m',
     daily: 'temperature_2m_max,temperature_2m_min',
   });
-  return { name, ...(await getJSON(`${WX}?${p}`)) }; //parsed so it will put the first elements then the new element added in a new array 
+  return { name, ...(await getJSON(`${WX}?${p}`)) }; //spread so it will put the first elements then the new element added in a new array 
+}
+
+function renderWeather(data) {
+  const { current, daily } = data;//destructure
+  temp_el.textContent =
+    `${Math.round(current.temperature_2m)}°C`; //bel element tem_el ecrit la valeur qui est dans current.temperature..
+  wind_el.textContent =
+    `Wind ${current.wind_speed_10m} km/h`; //same thing as temp_el but for wind
+
+  forecast_el.replaceChildren( // replace childreen is to delete everything so we can re input
+    ...daily.time.map((day, i) => { //spread but day1 day2 .. and then add the new element
+      const card = document.createElement('li'); //create an element li in html in the unorder list
+      card.textContent = `${day}: ${daily.temperature_2m_max[i]}°`; // in the li add the temp daily in it
+      return card;
+    })
+  );
 }
