@@ -47,9 +47,9 @@ function renderWeather(data) {
 }
 
 function setStatus(state, message = '') { // we need to state the status for the user so he knows whats going on with have" idle, loading, done and error"
-  statusEl.dataset.state = state;
-  statusEl.textContent = message;
-  searchBtn.disabled = state === 'loading';
+  status_el.dataset.state = state;
+  status_el.textContent = message;
+  search_btn.disabled = state === 'loading';
 }
 
 function friendly(err) { //function in case we have an error , we will send a mesage to the user so he kknows what he did wrong 
