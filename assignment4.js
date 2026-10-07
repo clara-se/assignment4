@@ -40,7 +40,8 @@ function describe(code) {
 }
 
 //my parameters defined in html
-const search_btn=document.querySelector('#searchform');
+const search_form = document.querySelector('#searchform');
+const search_btn  = document.querySelector('#search');
 const status_el=document.querySelector('#status');
 const city_input=document.querySelector('#city');
 const temp_el=document.querySelector('#temp');
@@ -110,18 +111,30 @@ function friendly(err) { //function in case we have an error , we will send a me
   return "Couldn't reach the weather service. Check your connection and try again.";
 }
 
+//added a function if i write beirut shows right but if i right smething wrong still shows the results of beirut 
+function clearWeather() {
+  icon_el.hidden = true;
+  temp_el.textContent = '';
+  conditions_el.textContent = '';
+  feels_el.textContent = '';
+  humidity_el.textContent = '';
+  wind_el.textContent = '';
+  forecast_el.replaceChildren();
+}
+
 async function onSearch(e) {
   e.preventDefault();
   const city = city_input.value.trim();// we let the user input the city he wants
-  setStatus('loading', `Loading ${city}…`); //now we show load
+  setStatus('loading', `⏳ Loading ${city}…`); //addded styling ,now we show load
   try {
     const data = await loadWeather(city); // we try to fetsh the data of the city the user wants 
     renderWeather(data); //take the variables i want that i defined in renderweather
     setStatus('success');
   } catch (err) { // in case we coulldnt fetsh the data , we go to the function friendly that shows the user what he did wrong
+    clearWeather();
     setStatus('error', friendly(err));
   }
 }
 
-search_btn.addEventListener('submit', onSearch);// add a listener on the button search 
+search_form.addEventListener('submit', onSearch);// add a listener on the button search 
 setStatus('idle', 'Search for a city');// what to show when the state is idle

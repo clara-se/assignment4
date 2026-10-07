@@ -1,0 +1,95 @@
+/* added a color palette with variables */
+:root {
+  --bg: #220901;
+  --surface: #621708;
+  --border: #941B0C;
+  --danger: #941B0C;
+  --accent-dark: #BC3908;
+  --accent: #F6AA1C;
+  --text: #FFF3E0;
+  --muted: #D9B99B;
+}
+
+/* do the body font choose the family fonts , colors of each thing*/
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background:var(--bg);
+  color: var(--text);
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+/*special style for the h1 header*/
+h1 { margin: 0 0 16px; font-size: 1.6rem; }
+
+/* how to display the search form usig a flex-- its for the search buuton*/
+#searchform { display: flex; gap: 8px; }
+/*city is where we input the text*/
+#city {
+  flex: 1;
+  min-width: 0;
+  padding: 12px;
+  font-size: 1rem;
+  color: inherit;
+  background:var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+/* this is the design of the button */
+#search {
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--bg);
+  background:var(--accent);
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+/*animation of the button*/
+#search:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* this is the design of the status: loading , error*/
+#status { min-height: 1.5em; margin: 14px 0; color: var(--muted); }
+
+#status[data-state="error"] {
+  color: var(--text);
+  background: var(--danger);
+  padding: 10px 14px;
+  border-radius: 10px;
+}
+
+#status[data-state="loading"] {
+  color: var(--accent);
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  padding: 10px 14px;
+  border-radius: 10px;
+}
+
+/* this is styling the parameters */
+#temp { margin: 0; font-size: 3rem; line-height: 1.1; }
+#conditions { margin: 4px 0 16px; font-size: 1.1rem; color: var(--muted); }
+#feels, #humidity, #wind { margin: 4px 0; }
+
+#forecast {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+#forecast li {
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+/* to adapt to mobile/desktop */
+@media (min-width: 480px) {
+  #forecast { grid-template-columns: repeat(3, 1fr); }
+}
