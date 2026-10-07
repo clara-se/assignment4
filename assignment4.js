@@ -16,3 +16,16 @@ async function getJSON(url) {
   return response.json();
 }
 
+async function loadWeather(city) {
+  const q = new URLSearchParams({ name: city, count: 1 }); // so we dont write manually the url
+  const geo = await getJSON(`${GEO}?${q}`); //get the data from the geo api
+  if (!geo.results?.length) throw new Error('not-found');// so it doesnt do error if the client try to fetch a non existing data, it will go out
+
+  const { latitude, longitude, name } = geo.results[0]; //destructure so we dont do data.current.temperature =>current.temperature
+  const p = new URLSearchParams({ //get the data from the open weather by calling the api
+    latitude, longitude, forecast_days: 3, // the parameters i want
+    current: 'temperature_2m,wind_speed_10m',
+    daily: 'temperature_2m_max,temperature_2m_min',
+  });
+  return { name, ...(await getJSON(`${WX}?${p}`)) }; //parsed so it will put the first elements then the new element added in a new array 
+}
