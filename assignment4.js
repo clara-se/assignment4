@@ -42,7 +42,7 @@ function describe(code) {
 //my parameters defined in html
 const search_btn=document.querySelector('#searchform');
 const status_el=document.querySelector('#status');
-const city=document.querySelector('#city');
+const city_input=document.querySelector('#city');
 const temp_el=document.querySelector('#temp');
 const wind_el=document.querySelector('#wind');
 const forecast_el=document.querySelector('#forecast');
@@ -79,7 +79,9 @@ function renderWeather(data) {
     `${Math.round(current.temperature_2m)}°C`; //bel element tem_el ecrit la valeur qui est dans current.temperature..
   wind_el.textContent =
     `Wind ${current.wind_speed_10m} km/h`; //same thing as temp_el but for wind
-
+    //added the 2 more features 
+    feels_el.textContent = `Feels like ${Math.round(current.apparent_temperature)}°C`;
+    humidity_el.textContent = `Humidity ${current.relative_humidity_2m}%`;
   forecast_el.replaceChildren( // replace childreen is to delete everything so we can re input
     ...daily.time.map((day, i) => { //spread but day1 day2 .. and then add the new element
       const card = document.createElement('li'); //create an element li in html in the unorder list
@@ -90,6 +92,7 @@ function renderWeather(data) {
   //added where hes gonna fetch the code to put the matching weather using openweathermap api this time cz open meteo dont have icons
     const [text, iconName] = describe(current.weather_code);
     icon_el.src = `https://openweathermap.org/img/wn/${iconName}@2x.png`;
+    icon_el.hidden = false; // we remove the hidden feature now on the image so it shows the icon
     icon_el.alt = text; // the text that match with my codes are my alt text in case the person cant see the icon
     conditions_el.textContent = text;
 }
@@ -109,7 +112,7 @@ function friendly(err) { //function in case we have an error , we will send a me
 
 async function onSearch(e) {
   e.preventDefault();
-  const city = input.value.trim();// we let the user input the city he wants
+  const city = city_input.value.trim();// we let the user input the city he wants
   setStatus('loading', `Loading ${city}…`); //now we show load
   try {
     const data = await loadWeather(city); // we try to fetsh the data of the city the user wants 
@@ -120,5 +123,5 @@ async function onSearch(e) {
   }
 }
 
-form.addEventListener('submit', onSearch);// add a listener on the button search 
+search_btn.addEventListener('submit', onSearch);// add a listener on the button search 
 setStatus('idle', 'Search for a city');// what to show when the state is idle
