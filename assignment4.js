@@ -9,6 +9,11 @@ const city=document.querySelector('#city');
 const temp_el=document.querySelector('#temp');
 const wind_el=document.querySelector('#wind');
 const forecast_el=document.querySelector('#forecast');
+//added new parameters
+const icon_el       = document.querySelector('#icon');
+const conditions_el = document.querySelector('#conditions');
+const feels_el      = document.querySelector('#feels');
+const humidity_el   = document.querySelector('#humidity');
 
 async function getJSON(url) {
   const response = await fetch(url); // calling the api 
@@ -24,7 +29,8 @@ async function loadWeather(city) {
   const { latitude, longitude, name } = geo.results[0]; //pulls the 3 fields out of the first geocoding result
   const p = new URLSearchParams({ //get the data from the open weather by calling the api
     latitude, longitude, forecast_days: 3, // the parameters i want
-    current: 'temperature_2m,wind_speed_10m',
+    //current: 'temperature_2m,wind_speed_10m',
+    current: 'temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code', // now we take parameters other than temperature
     daily: 'temperature_2m_max,temperature_2m_min',
   });
   return { name, ...(await getJSON(`${WX}?${p}`)) }; //spread so it will put the first elements then the new element added in a new object
